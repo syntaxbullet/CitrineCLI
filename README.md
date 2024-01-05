@@ -119,27 +119,6 @@ This command will permanently remove the task with ID 42 from the system. Please
 
 It's always good practice to verify the details of the task you intend to delete before executing this command to ensure that no critical tasks are lost inadvertently.
 
-### Creating a Task with CitrineCLI
-
-The `citrine add` command allows users to create a new task in the Citrine task manager. To create a task with specific attributes such as a due date, priority level, and tags, you can use the following flags:
-
-- `-d --due`: Specify the due date and time for the task in RFC3339 format.
-- `-p --priority`: Set the priority level of the task, using an integer between 0 (lowest) to 9 (highest).
-- `-t --tags`: Add a list of tags to the task for categorization or filtering.
-
-#### Syntax
-
-```
-citrine add <task_description> [flags]
-```
-
-`<task_description>` is a mandatory field where you describe the task to be added.
-
-Flags are optional parameters that allow further customization of the task.
-
-considering this write documentation in the same style for the list command which takes the same flags and returns a list of tasks separated by new lines. when the flags are not provided the info will not be displayed/output, when the flags are provided with a value the information can be filtered, include example output
-
-
 ### Listing Tasks with CitrineCLI
 
 The `citrine list` command allows users to display a list of tasks in the Citrine task manager. To filter the displayed tasks based on specific attributes such as due date, priority level, and tags, you can use the following flags:
