@@ -20,7 +20,7 @@ enum Status {
     OVERDUE,
 }
 
-pub fn parse_task_from_string(input: &str) -> Option<Task> {
+fn parse_from_string(input: &str) -> Option<Task> {
     // 1. [x] some task - due: 2020-02-20T12:00:00+09:00 priority: 1 tags: tag1,tag2
     let mut due_date: Option<String> = None;
     let mut priority: Option<u8> = None;
@@ -33,7 +33,7 @@ pub fn parse_task_from_string(input: &str) -> Option<Task> {
     id = input.chars().take_while(|c| c != &'.').collect::<String>().parse::<u32>().unwrap();
     // obtaining the status is easy, we just need to look for an [ and a ] and grab that, then we match it to a status depending on which char is inside
     let openbracket = input.chars().position(|c| c == '[').unwrap();
-    // check if there is a closing bracket exactly 3 chars after the opening bracket
+    // check if there is a closing bracket exactly 2 chars after the opening bracket
     let closedbracket = input.chars().position(|c| c == ']').unwrap();
     if closedbracket - openbracket == 2 {
         status = match input.chars().nth(openbracket + 1).unwrap() {
@@ -74,3 +74,39 @@ pub fn parse_task_from_string(input: &str) -> Option<Task> {
 
 }
 
+fn stringify(task: Task) -> String {
+    let mut output = String::new();
+    output.push_str(&task.id.to_string());
+    output.push_str(". [");
+    output.push_str(match task.status {
+        Status::OPEN => " ",
+        Status::INPROGRESS => ">",
+        Status::DONE => "x",
+        Status::OVERDUE => "!",
+    });
+    output.push_str("] ");
+    output.push_str(&task.title);
+    if task.due_date.is_some() {
+        output.push_str(" - due: ");
+        output.push_str(&task.due_date.unwrap());
+    }
+    if task.priority.is_some() {
+        output.push_str(" - priority: ");
+        output.push_str(&task.priority.unwrap().to_string());
+    }
+    if task.tags.is_some() {
+        output.push_str(" - tags: ");
+        output.push_str(&task.tags.unwrap().join(","));
+    }
+    return output;
+}
+
+
+impl Task {
+    pub fn parse (input: &str) -> Option<Task> {
+        parse_from_string(input)
+    }
+    pub fn stringify (task: Task) -> String {
+        stringify(task)
+    }
+}
