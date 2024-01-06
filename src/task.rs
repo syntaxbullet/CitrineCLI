@@ -1,7 +1,4 @@
-
-
 #[derive(Debug)]
-// ignore dead code for this struct, as we are not using it yet
 #[allow(dead_code)]
 pub struct Task {
     id: u32,
@@ -12,14 +9,13 @@ pub struct Task {
     tags: Option<Vec<String>>,
 }
 
-#[derive(Debug)]
-enum Status {
+#[derive(Debug, Clone, PartialEq)]
+pub enum Status {
     OPEN,
     INPROGRESS,
     DONE,
     OVERDUE,
 }
-
 fn parse_from_string(input: &str) -> Option<Task> {
     // 1. [x] some task - due: 2020-02-20T12:00:00+09:00 priority: 1 tags: tag1,tag2
     let mut due_date: Option<String> = None;
@@ -101,7 +97,7 @@ fn stringify(task: Task) -> String {
     return output;
 }
 
-
+#[allow(dead_code)]
 impl Task {
     pub fn parse (input: &str) -> Option<Task> {
         parse_from_string(input)
@@ -109,4 +105,69 @@ impl Task {
     pub fn stringify (task: Task) -> String {
         stringify(task)
     }
+    pub fn get_tags (&self) -> Option<Vec<String>> {
+        self.tags.clone()
+    }
+
+    pub fn set_id (&mut self, id: u32) {
+        self.id = id;
+    }
+    pub fn set_title (&mut self, title: String) {
+        self.title = title;
+    }
+
+    pub fn set_status(&mut self, status: Status) {
+        // do not allow setting the status to OVERDUE if there is no due date from the past
+        if status == Status::OVERDUE && self.due_date.is_none() {
+            panic!("Failed to set status: Cannot set status to OVERDUE if there is no due date");
+        }
+        // check if the due date is in the past, if it is not and the status is OVERDUE, return an error message
+        if status == Status::OVERDUE && self.due_date.is_some() {
+            let parsed_date = chrono::DateTime::parse_from_rfc3339(&self.due_date.clone().unwrap());
+            if parsed_date.is_err() {
+                panic!("Failed to parse due date: {}", parsed_date.unwrap_err());
+            }
+            let parsed_date = parsed_date.unwrap();
+            if parsed_date > chrono::Utc::now() {
+                panic!("Failed to set status: Cannot set status to OVERDUE if the due date is in the future");
+            }
+        }
+        self.status = status;
+    }
+    pub fn set_due_date (&mut self, due_date: Option<String>) {
+        // attempt to parse the date, if it fails, return an error, if it is in the past, return an error
+        if due_date.is_some() {
+            let parsed_date = chrono::DateTime::parse_from_rfc3339(&due_date.clone().unwrap());
+            if parsed_date.is_err() {
+                panic!("Failed to parse due date: {}", parsed_date.unwrap_err());
+            }
+            let parsed_date = parsed_date.unwrap();
+            if parsed_date < chrono::Utc::now() {
+                panic!("Failed to set due date: Date is in the past");
+            }
+        }
+
+        self.due_date = due_date;
+    }
+    pub fn set_priority (&mut self, priority: Option<u8>) {
+        // if priority is set, it must be between 1 and 9
+        if priority.is_some() {
+            if priority.unwrap() < 1 || priority.unwrap() > 9 {
+                panic!("Failed to set priority: Priority must be between 1 and 9");
+            }
+        }
+        self.priority = priority;
+    }
+    pub fn set_tags (&mut self, tags: Option<Vec<String>>) {
+        // if tags are set, they must be a vector of strings that are not empty and do not contain spaces
+        if tags.is_some() {
+            for tag in tags.clone().unwrap() {
+                if tag.is_empty() || tag.contains(" ") {
+                    panic!("Failed to set tags: Tags must not be empty and must not contain spaces");
+                }
+            }
+        }
+        self.tags = tags;
+    }
+
 }
