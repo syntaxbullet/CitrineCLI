@@ -169,5 +169,32 @@ impl Task {
         }
         self.tags = tags;
     }
-
+    pub fn remove_tag (&mut self, tag: String) {
+        if self.tags.is_some() {
+            let mut tags = self.tags.clone().unwrap();
+            if tags.contains(&tag) {
+                tags.remove(tags.iter().position(|t| t == &tag).unwrap());
+                self.tags = Some(tags);
+            } else {
+                panic!("Failed to remove tag: Tag does not exist");
+            }
+        } else {
+            panic!("Failed to remove tag: Tag does not exist");
+        }
+    }
+    pub fn append_tag (&mut self, tag: String) {
+        if self.tags.is_some() {
+            let mut tags = self.tags.clone().unwrap();
+            if !tags.contains(&tag) {
+                tags.push(tag);
+                self.tags = Some(tags);
+            } else {
+                panic!("Failed to add tag: Tag already exists");
+            }
+        } else {
+            let mut tags = Vec::new();
+            tags.push(tag);
+            self.tags = Some(tags);
+        }
+    }
 }
