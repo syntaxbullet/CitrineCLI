@@ -1,145 +1,163 @@
-# The Citrine CLI
-The CitrineCLI is the core component of citrine and the main entrypoint into the ecosystem that will be built around it, it exposes basic `create`, `read/list`, `update`, and `delete` capabilities for other applications and tools to interact with.
-## Citrine's CLI follows the UNIX philosophy
+# Citrine Task Management CLI
+Citrine is a minimal and modular task management command-line interface designed to embody the UNIX philosophy of doing one thing well.
 
-The CLI is designed to be minimalist, modular and re-usable. On its own it is not capable of performing any complex task management workflows like recurring events or deadline notifications, instead it is designed to be easily combined with arbitrary utilities like `cron` or `grep` to provide it with time-triggers or search functionality.
-
-Citrine's CLI tools are built to do one thing and do it well. They output results in a simple, text-based format that can be easily piped into other programs for further processing. This approach allows users to build their own customized workflows by chaining together commands using pipes (`|`) and other shell features.
+Citrine outputs results in a simple, text-based format that can be easily piped into other programs for further processing. This approach allows users to build their own customized workflows by chaining together commands using pipes (`|`) and other shell features.
 
 For instance, a user could use Citrine's CLI to list tasks and then pipe the output to `sort` or `awk` for organizing tasks by priority or filtering tasks based on certain criteria. This flexibility is a core advantage of such a design – rather than being confined to the features provided by a monolithic application, users can leverage the entire ecosystem of UNIX command line tools.
 
 Moreover, Citrine's CLI commands are designed to be non-interactive and stateless, which means they can be run as part of scripts without requiring user input during execution. This makes them ideal for automation via scripts or as part of larger systems using tools like `make` or even `systemd` timers.
 
-Error handling in Citrine's CLI follows the UNIX convention: success is silent (exit code 0), while errors produce diagnostic messages to standard error (stderr) and exit with a non-zero status. This makes it easy to check for errors in scripts and take corrective action when necessary.
+Citrine is designed to keep track of tasks where they are being worked on, the `citrine` command can be called from every folder and creates a `.citrine` file there in order to keep track of your tasks.
 
-The configuration for Citrine’s CLI is typically stored in plain text files which users can edit using their preferred text editors. This empowers users with full control over their environment, allowing them to version control configurations, share them across teams, or quickly apply changes without navigating complex graphical interfaces.
+## Quick Start
+To see a list of subcommands available and how they can be used run `citrine --help` to get help with a specific command type sometihng like `citrine add --help`
+## Installation
+### Step by Step Installation for regular usage
 
-In summary, Citrine's CLI offers a powerful foundation that embraces the composability and efficiency of traditional UNIX command-line tools. By supporting scripting and customization through standard input/output conventions, it invites both novice and experienced users alike to construct tailored solutions that fit seamlessly into their existing toolchains and workflows.
-## CitrineCLI Spec
+### On Linux or Other Unix-Based Systems:
 
-### Creating a Task with CitrineCLI
+1. **Download and Locate the Binary:**
+   - Obtain the latest release binary that matches your OS and architecture.
 
-The `citrine add` command allows users to create a new task in the Citrine task manager. To create a task with specific attributes such as a due date, priority level, and tags, you can use the following flags:
+2. **Move the Binary:**
+   - Use the `mv` command to move the downloaded binary to the `/usr/bin` directory. This step grants system-wide access to the executable.
+   - Example:
+     ```sh
+     # Assuming you're in the directory where the binary is downloaded
+     sudo mv citrine-linux-x86-64 /usr/bin/citrine
+     ```
 
-- `-d --due`: Specify the due date and time for the task in RFC3339 format.
-- `-p --priority`: Set the priority level of the task, using an integer between 0 (lowest) to 9 (highest).
-- `-t --tags`: Add a list of tags to the task for categorization or filtering.
+3. **Create a Symlink (Optional):**
+   - Creating a symlink allows you to call the executable by a different name or from different locations.
+   - Example:
+     ```sh
+     # Create a symlink to make the executable callable as 'citrine'
+     sudo ln -s /usr/bin/citrine /usr/bin/citrine
+     ```
 
-#### Syntax
+By moving the binary to `/usr/bin`, it becomes accessible system-wide. Additionally, creating a symlink (as shown in the example) allows you to call the executable by the desired name (`citrine` in this case) from any location in the terminal.
 
-```
-citrine add <task_description> [flags]
-```
+Remember, the use of `sudo` might be necessary to perform actions that require administrative privileges, such as moving files to system directories (`/usr/bin` in this case).
 
-`<task_description>` is a mandatory field where you describe the task to be added.
+Always ensure that the permissions are appropriately set to allow execution of the binary after placing it in the system directories.
 
-Flags are optional parameters that allow further customization of the task.
+### On Windows:
 
-#### Example Usage
+1. **Locate the Binary:**
+   Find the downloaded binary file, for example, `citrine.exe`.
 
-To create a math homework task with a due date, priority level, and tags, you would use `citrine add` like this:
+2. **Access Environment Variables:**
+   - Right-click on "This PC" or "My Computer."
+   - Select "Properties."
+   - Click on "Advanced system settings" on the left panel.
+   - In the System Properties window, click on the "Environment Variables" button.
 
-```
-citrine add do math homework -d "2023-04-05T14:00:00Z" -p 5 -t calculus,homework,urgent
-```
+3. **Edit PATH Variable:**
+   - In the System Variables section, find and select the `Path` variable, then click "Edit."
 
-In this example:
-- The due timestamp is `2023-04-05T14:00:00Z`, which follows the RFC3339 format.
-- The priority is set at `5`, indicating it's of medium-high importance.
-- The tags `calculus`, `homework`, and `urgent` are added for organizational purposes.
+4. **Add Binary Folder to PATH:**
+   - Click "New" and add the full path to the folder containing the `citrine.exe` binary.
+   - Click "OK" on all windows to apply the changes.
 
-### Updating a Task with CitrineCLI
+5. **Verify Installation:**
+   - Open a new Command Prompt window (Win + R, type `cmd`, press Enter).
+   - Type `citrine` and press Enter. If the installation was successful, the command should execute the program.
 
-The `citrine update` command allows users to modify an existing task in the Citrine task manager. To update a task with new attributes such as a due date, priority level, and tags or to change its description, you can use the following flags:
+## Usage
+### Available Commands:
 
-- `-d --due`: Update the due date and time for the task in RFC3339 format.
-- `-p --priority`: Change the priority level of the task, using an integer between 0 (lowest) to 9 (highest).
-- `-t --tags`: Replace current tags with a new list of tags for categorization or filtering.
-- `--append-tags`: Add more tags to the existing list without removing current ones.
-- `--remove-tags`: Remove specific tags from the existing list.
-- `-m --message`: Update the description of the task.
-- `-s --status`: Update the status of the task.
+- `add` - Add a new task to the task list.
+- `update` - Update an existing task in the task list.
+- `delete` - Delete an existing task from the task list.
+- `list` - List all tasks in the task list.
+- `help` - Print this message or the help of the given subcommand(s).
 
-#### Syntax
+### Global Options:
 
-```
-citrine update <task_id> [flags]
-```
+- `-h, --help` - Print help.
+- `-V, --version` - Print version.
 
-`<task_id>` is a mandatory field that specifies which task should be updated. It is assumed that each task has a unique, sequential ID.
+## Add a Task
 
-Flags are optional parameters that allow further customization of the task.
-
-#### Example Usage
-
-To update math homework task with ID 42 by changing its due date, priority level, and adding an additional tag, you would use `citrine update` like this:
-
-```
-citrine update 42 -d "2023-04-06T18:00:00Z" -p 6 --append-tags rescheduled
-```
-
-In this example:
-- The due timestamp is changed to `2023-04-06T18:00:00Z`, according to RFC3339 format.
-- The priority is updated to `6`, indicating it's of high importance now.
-- The tag `rescheduled` is appended to the existing list of tags.
-
-To change the description and remove specific tags from a task, use:
-
-```
-citrine update 42 -m "complete advanced calculus homework" --remove-tags urgent
+```shell
+citrine add [OPTIONS] <TITLE>
 ```
 
-Here:
-- The description is updated to "complete advanced calculus homework".
-- The tag `urgent` is removed from the existing list of tags.
+### Arguments:
 
+- `<TITLE>` - The title of the task.
 
-considering this template create documentation on how to delete a task
+### Options:
 
-### Deleting a Task with CitrineCLI
+- `-d, --due <DUE_DATE>` - The due date of the task in rfc3339 format (`YYYY-MM-DDTHH:MM:SS+00:00`).
+- `-p, --priority <PRIORITY>` - The priority of the task (0-9).
+- `-t, --tags <TAGS>` - The tags of the task, comma-separated.
+- `-h, --help` - Print help.
 
-The `citrine delete` command is used to remove an existing task from the Citrine task manager. When a task is no longer needed or has been completed, you can delete it to keep your task list organized. Deleting a task is a straightforward process and only requires the unique ID of the task you wish to remove.
+## Update a Task
 
-#### Syntax
-
-```
-citrine delete <task_id>
-```
-
-`<task_id>` is a mandatory field that specifies which task should be deleted. Each task has a unique, sequential ID that identifies it within the Citrine system.
-
-#### Example Usage
-
-To delete a math homework task with ID 42 from your list of tasks, you would use `citrine delete` as follows:
-
-```
-citrine delete 42
+```shell
+citrine update [OPTIONS] <ID>
 ```
 
-This command will permanently remove the task with ID 42 from the system. Please note that once a task is deleted, it cannot be recovered. Use this command with caution to avoid accidentally deleting important tasks.
+### Arguments:
 
-It's always good practice to verify the details of the task you intend to delete before executing this command to ensure that no critical tasks are lost inadvertently.
+- `<ID>` - The id of the task to update.
 
-### Listing Tasks with CitrineCLI
+### Options:
 
-The `citrine list` command allows users to display a list of tasks in the Citrine task manager.
+- `-d, --due <DUE_DATE>` - The due date of the task in rfc3339 format.
+- `-p, --priority <PRIORITY>` - The priority of the task (0-9).
+- `-t, --tags <TAGS>` - The tags of the task, comma-separated.
+- `-s, --status <STATUS>` - The status of the task.
+- `-m, --message <TITLE>` - The title of the task.
+- `-r, --remove-tags <REMOVE_TAG>` - Remove tags from the task.
+- `-a, --append-tags <APPEND_TAG>` - Append tags to the task.
+- `-h, --help` - Print help.
 
-#### Syntax
+## Delete a Task
 
-```
-citrine list 
-```
-to apply search or filter the list you can for example pipe it into grep:
-```
-citrine list | grep "priority: 9"
-```
-```
-citrine list | grep "[x]" // completed tasks
-citrine list | grep "[ ]" // open tasks
-citrine list | grep "[>]" // in-progress tasks
-citrine list | grep "[!]" // overdue tasks
+```shell
+citrine delete <ID>
 ```
 
+### Arguments:
+
+- `<ID>` - The id of the task to remove.
+
+### Options:
+
+- `-h, --help` - Print help.
+
+## List Tasks
+
+```shell
+citrine list
 ```
-citrine list | grep "2024-02-14" // find all tasks due valentines day.
+
+No arguments or options are required to list all task items. Use `citrine list` to see an overview of all tasks.
+
+*Note: Replace `<ID>`, `<TITLE>`, `<DUE_DATE>`, `<PRIORITY>`, `<TAGS>`, `<STATUS>`, `<REMOVE_TAG>`, and `<APPEND_TAG>` with the relevant information when executing commands.*
+
+
+
+## Advanced Usage
+For more advanced user's here are some examples of how some of the output issued by citrine can be used together with other cli tools in order to create some interesting behavior.
+
+```sh
+# get all high priority tasks
+citrine list | grep -E 'priority: [789]'
+# get medium priority tasks
+citrine list | grep -E 'priority: [456]'
+# get low priority tasks
+citrine list | grep -E 'priority: [123]'
 ```
+```sh
+# get all tasks due today
+citrine list | grep "$(date +%Y-%m-%d)"
+# count the number of completed tasks
+citrine list | grep "[x]" | wc -l
+# setting relative deadlines using the GNU date command
+citrine add -d "$(date --rfc-3339=seconds --date='next Friday')" "Task Title"
+```
+
