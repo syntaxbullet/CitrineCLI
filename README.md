@@ -1,3 +1,4 @@
+# Citrine CLI
 Citrine is a minimal and modular task management command-line interface (CLI) that excels at doing one thing well, in line with the UNIX philosophy.
 
 Citrine outputs results in a simple, text-based format, ideal for piping into other programs like `sort` or `awk` for task organization or filtering based on criteria. This design allows users to build customized workflows by chaining commands using pipes (`|`) and other shell features.
