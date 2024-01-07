@@ -1,81 +1,71 @@
-# Citrine Task Management CLI
-Citrine is a minimal and modular task management command-line interface designed to embody the UNIX philosophy of doing one thing well.
+Citrine is a minimal and modular task management command-line interface (CLI) that excels at doing one thing well, in line with the UNIX philosophy.
 
-Citrine outputs results in a simple, text-based format that can be easily piped into other programs for further processing. This approach allows users to build their own customized workflows by chaining together commands using pipes (`|`) and other shell features.
+Citrine outputs results in a simple, text-based format, ideal for piping into other programs like `sort` or `awk` for task organization or filtering based on criteria. This design allows users to build customized workflows by chaining commands using pipes (`|`) and other shell features.
 
-For instance, a user could use Citrine's CLI to list tasks and then pipe the output to `sort` or `awk` for organizing tasks by priority or filtering tasks based on certain criteria. This flexibility is a core advantage of such a design – rather than being confined to the features provided by a monolithic application, users can leverage the entire ecosystem of UNIX command line tools.
-
-Moreover, Citrine's CLI commands are designed to be non-interactive and stateless, which means they can be run as part of scripts without requiring user input during execution. This makes them ideal for automation via scripts or as part of larger systems using tools like `make` or even `systemd` timers.
-
-Citrine is designed to keep track of tasks where they are being worked on, the `citrine` command can be called from every folder and creates a `.citrine` file there in order to keep track of your tasks.
+The CLI commands are non-interactive and stateless, perfect for scripting and automation with other tools such as `make` or `systemd` timers. Citrine creates a `.citrine` file in each working directory to track tasks locally.
 
 ## Quick Start
-To see a list of subcommands available and how they can be used run `citrine --help` to get help with a specific command type sometihng like `citrine add --help`
+🌟 To see available subcommands and their usage, run `citrine --help`. For help with a specific command, type `citrine add --help`.
+
 ## Installation
-### Step by Step Installation for regular usage
+### Step-by-Step Installation for Regular Usage
 
 ### On Linux or Other Unix-Based Systems:
 
 1. **Download and Locate the Binary:**
-   - Obtain the latest release binary that matches your OS and architecture.
+   - Download the latest release binary suitable for your OS and architecture.
 
 2. **Move the Binary:**
-   - Use the `mv` command to move the downloaded binary to the `/usr/bin` directory. This step grants system-wide access to the executable.
+   - Move the downloaded binary to `/usr/bin` for system-wide access.
    - Example:
      ```sh
-     # Assuming you're in the directory where the binary is downloaded
      sudo mv citrine-linux-x86-64 /usr/bin/citrine
      ```
 
 3. **Create a Symlink (Optional):**
-   - Creating a symlink allows you to call the executable by a different name or from different locations.
+   - Make the executable easily callable with a symlink.
    - Example:
      ```sh
-     # Create a symlink to make the executable callable as 'citrine'
      sudo ln -s /usr/bin/citrine /usr/bin/citrine
      ```
 
-By moving the binary to `/usr/bin`, it becomes accessible system-wide. Additionally, creating a symlink (as shown in the example) allows you to call the executable by the desired name (`citrine` in this case) from any location in the terminal.
-
-Remember, the use of `sudo` might be necessary to perform actions that require administrative privileges, such as moving files to system directories (`/usr/bin` in this case).
-
-Always ensure that the permissions are appropriately set to allow execution of the binary after placing it in the system directories.
+By moving the binary to `/usr/bin`, you make it accessible everywhere. Use `sudo` if needed.
 
 ### On Windows:
 
 1. **Locate the Binary:**
-   Find the downloaded binary file, for example, `citrine.exe`.
+   Find `citrine.exe`.
 
 2. **Access Environment Variables:**
-   - Right-click on "This PC" or "My Computer."
+   - Right-click "This PC" or "My Computer."
    - Select "Properties."
-   - Click on "Advanced system settings" on the left panel.
-   - In the System Properties window, click on the "Environment Variables" button.
+   - Click "Advanced system settings."
+   - Click "Environment Variables."
 
 3. **Edit PATH Variable:**
-   - In the System Variables section, find and select the `Path` variable, then click "Edit."
+   - In "System Variables," select `Path` and click "Edit."
 
 4. **Add Binary Folder to PATH:**
-   - Click "New" and add the full path to the folder containing the `citrine.exe` binary.
-   - Click "OK" on all windows to apply the changes.
+   - Click "New" and enter the path to `citrine.exe`.
+   - Confirm with "OK."
 
 5. **Verify Installation:**
-   - Open a new Command Prompt window (Win + R, type `cmd`, press Enter).
-   - Type `citrine` and press Enter. If the installation was successful, the command should execute the program.
+   - Open a new Command Prompt.
+   - Type `citrine` and hit Enter. If set up correctly, you should see Citrine's output.
 
 ## Usage
 ### Available Commands:
 
-- `add` - Add a new task to the task list.
-- `update` - Update an existing task in the task list.
-- `delete` - Delete an existing task from the task list.
-- `list` - List all tasks in the task list.
-- `help` - Print this message or the help of the given subcommand(s).
+- `add` - Add a new task 📝.
+- `update` - Modify an existing task ✏️.
+- `delete` - Remove a task 🗑️.
+- `list` - Display all tasks 📜.
+- `help` - Show help information ℹ️.
 
 ### Global Options:
 
-- `-h, --help` - Print help.
-- `-V, --version` - Print version.
+- `-h, --help` - View help.
+- `-V, --version` - Show version number.
 
 ## Add a Task
 
@@ -89,10 +79,10 @@ citrine add [OPTIONS] <TITLE>
 
 ### Options:
 
-- `-d, --due <DUE_DATE>` - The due date of the task in rfc3339 format (`YYYY-MM-DDTHH:MM:SS+00:00`).
-- `-p, --priority <PRIORITY>` - The priority of the task (0-9).
-- `-t, --tags <TAGS>` - The tags of the task, comma-separated.
-- `-h, --help` - Print help.
+- `-d, --due <DUE_DATE>` - The due date in RFC 3339 format (`YYYY-MM-DDTHH:MM:SS+00:00`).
+- `-p, --priority <PRIORITY>` - Priority level (0-9).
+- `-t, --tags <TAGS>` - Associated tags, comma-separated.
+- `-h, --help` - Display help.
 
 ## Update a Task
 
@@ -102,18 +92,16 @@ citrine update [OPTIONS] <ID>
 
 ### Arguments:
 
-- `<ID>` - The id of the task to update.
+- `<ID>` - The ID of the task to be updated.
 
 ### Options:
 
-- `-d, --due <DUE_DATE>` - The due date of the task in rfc3339 format.
-- `-p, --priority <PRIORITY>` - The priority of the task (0-9).
-- `-t, --tags <TAGS>` - The tags of the task, comma-separated.
-- `-s, --status <STATUS>` - The status of the task.
-- `-m, --message <TITLE>` - The title of the task.
-- `-r, --remove-tags <REMOVE_TAG>` - Remove tags from the task.
-- `-a, --append-tags <APPEND_TAG>` - Append tags to the task.
-- `-h, --help` - Print help.
+- All options are the same as for `add`, with the addition of:
+- `-s, --status <STATUS>` - The task's status.
+- `-m, --message <TITLE>` - A new title.
+- `-r, --remove-tags <REMOVE_TAG>` - Tags to remove.
+- `-a, --append-tags <APPEND_TAG>` - Tags to append.
+- `-h, --help` - Help.
 
 ## Delete a Task
 
@@ -123,11 +111,11 @@ citrine delete <ID>
 
 ### Arguments:
 
-- `<ID>` - The id of the task to remove.
+- `<ID>` - The ID of the task to be deleted.
 
 ### Options:
 
-- `-h, --help` - Print help.
+- `-h, --help` - Help.
 
 ## List Tasks
 
@@ -135,29 +123,26 @@ citrine delete <ID>
 citrine list
 ```
 
-No arguments or options are required to list all task items. Use `citrine list` to see an overview of all tasks.
+Use `citrine list` to see an overview of all tasks.
 
-*Note: Replace `<ID>`, `<TITLE>`, `<DUE_DATE>`, `<PRIORITY>`, `<TAGS>`, `<STATUS>`, `<REMOVE_TAG>`, and `<APPEND_TAG>` with the relevant information when executing commands.*
-
-
+*Replace placeholders with actual values when executing commands.*
 
 ## Advanced Usage
-For more advanced user's here are some examples of how some of the output issued by citrine can be used together with other cli tools in order to create some interesting behavior.
+For more advanced users, here are some examples of how Citrine's output can be used in conjunction with other CLI tools to create interesting behaviors:
 
 ```sh
-# get all high priority tasks
+# Get all high priority tasks
 citrine list | grep -E 'priority: [789]'
-# get medium priority tasks
+# Get medium priority tasks
 citrine list | grep -E 'priority: [456]'
-# get low priority tasks
+# Get low priority tasks
 citrine list | grep -E 'priority: [123]'
 ```
 ```sh
-# get all tasks due today
+# Get all tasks due today
 citrine list | grep "$(date +%Y-%m-%d)"
-# count the number of completed tasks
-citrine list | grep "[x]" | wc -l
-# setting relative deadlines using the GNU date command
+# Count the number of completed tasks
+citrine list | grep -c "[x]"
+# Set relative deadlines using the GNU date command
 citrine add -d "$(date --rfc-3339=seconds --date='next Friday')" "Task Title"
 ```
-
