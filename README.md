@@ -121,63 +121,24 @@ It's always good practice to verify the details of the task you intend to delete
 
 ### Listing Tasks with CitrineCLI
 
-The `citrine list` command allows users to display a list of tasks in the Citrine task manager. To filter the displayed tasks based on specific attributes such as due date, priority level, and tags, you can use the following flags:
-
-- `-d --due`: Filter tasks by their due date and time. Provide the date in RFC3339 format.
-- `-p --priority`: Filter tasks by their priority level using an integer between 0 (lowest) to 9 (highest).
-- `-t --tags`: Filter tasks by a list of tags for categorization or filtering.
+The `citrine list` command allows users to display a list of tasks in the Citrine task manager.
 
 #### Syntax
 
 ```
-citrine list [flags]
+citrine list 
+```
+to apply search or filter the list you can for example pipe it into grep:
+```
+citrine list | grep "priority: 9"
+```
+```
+citrine list | grep "[x]" // completed tasks
+citrine list | grep "[ ]" // open tasks
+citrine list | grep "[>]" // in-progress tasks
+citrine list | grep "[!]" // overdue tasks
 ```
 
-Flags are optional parameters that allow you to filter and customize the display of tasks.
-
-#### Flags Explanation
-
-- `-d --due`: When this flag is provided with a value, only tasks with the specified due date will be listed. If omitted, the due dates will not be output in the final list
-- `-p --priority`: This flag filters the task list by priority. If you specify a priority level, only tasks with that priority will be shown. Without this flag, priorities will not be output.
-- `-t --tags`: Use this flag followed by specific tags to see only the tasks associated with these tags. Leaving out this flag means that tags won't be output.
-
-#### Example Usage
-
-To list all tasks without any specific filters or additional information:
 ```
-citrine list
+citrine list | grep "2024-02-14" // find all tasks due valentines day.
 ```
-
-To list all tasks that are due on March 31st, 2023:
-```
-citrine list --due "2023-03-31T23:59:59Z"
-```
-
-To list all high-priority (priority level 9) tasks:
-```
-citrine list --priority 9
-```
-
-To display all tasks including their tags 
-```
-citrine list --tags
-```
-
-#### Example Output
-
-Without any flags:
-```
-1. [IDLE] Finish project report
-2. [IN PROGRESS] Prepare presentation slides
-3. [COMPLETED] Call plumber about leak
-...
-```
-
-With priority and tag filters:
-```
-citrine list --priority 9 --tags urgent
-
-1. [IDLE] Finish project report - priority: 9, tags: urgent
-
-```
-
