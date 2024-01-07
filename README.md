@@ -58,6 +58,7 @@ The `citrine update` command allows users to modify an existing task in the Citr
 - `--append-tags`: Add more tags to the existing list without removing current ones.
 - `--remove-tags`: Remove specific tags from the existing list.
 - `-m --message`: Update the description of the task.
+- `-s --status`: Update the status of the task.
 
 #### Syntax
 
