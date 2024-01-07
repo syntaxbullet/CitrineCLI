@@ -143,7 +143,7 @@ citrine list | grep -E 'priority: [123]'
 # Get all tasks due today
 citrine list | grep "$(date +%Y-%m-%d)"
 # Count the number of completed tasks
-citrine list | grep -c "[x]"
+citrine list | grep -c "[x]" | wc -l
 # Set relative deadlines using the GNU date command
 citrine add -d "$(date --rfc-3339=seconds --date='next Friday')" "Task Title"
 ```
