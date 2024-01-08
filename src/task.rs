@@ -19,9 +19,8 @@ fn parse_from_string(input: &str) -> Option<Task> {
     let mut due_date: Option<String> = None;
     let mut priority: Option<u8> = None;
     let mut tags: Option<Vec<String>> = None;
-    
+
     let status: Status;
-    
 
     // to optain the id, we need to parse all characters until the first dot, and parse into u32
     let id: u32 = input
@@ -133,100 +132,6 @@ impl Task {
     pub fn stringify(task: Task) -> String {
         stringify(task)
     }
-    // pub fn get_tags(&self) -> Option<Vec<String>> {
-    //     self.tags.clone()
-    // }
-
-    // pub fn set_id(&mut self, id: u32) {
-    //     self.id = id;
-    // }
-    // pub fn set_title(&mut self, title: String) {
-    //     self.title = title;
-    // }
-
-    // pub fn set_status(&mut self, status: Status) {
-    //     // do not allow setting the status to Overdue if there is no due date from the past
-    //     if status == Status::Overdue && self.due_date.is_none() {
-    //         panic!("Failed to set status: Cannot set status to Overdue if there is no due date");
-    //     }
-    //     // check if the due date is in the past, if it is not and the status is Overdue, return an error message
-    //     if status == Status::Overdue && self.due_date.is_some() {
-    //         let parsed_date = chrono::DateTime::parse_from_rfc3339(&self.due_date.clone().unwrap());
-    //         if parsed_date.is_err() {
-    //             panic!("Failed to parse due date: {}", parsed_date.unwrap_err());
-    //         }
-    //         let parsed_date = parsed_date.unwrap();
-    //         if parsed_date > chrono::Utc::now() {
-    //             panic!("Failed to set status: Cannot set status to Overdue if the due date is in the future");
-    //         }
-    //     }
-    //     self.status = status;
-    // }
-    // pub fn set_due_date(&mut self, due_date: Option<String>) {
-    //     // attempt to parse the date, if it fails, return an error, if it is in the past, return an error
-    //     if due_date.is_some() {
-    //         let parsed_date = chrono::DateTime::parse_from_rfc3339(&due_date.clone().unwrap());
-    //         if parsed_date.is_err() {
-    //             panic!("Failed to parse due date: {}", parsed_date.unwrap_err());
-    //         }
-    //         let parsed_date = parsed_date.unwrap();
-    //         if parsed_date < chrono::Utc::now() {
-    //             panic!("Failed to set due date: Date is in the past");
-    //         }
-    //     }
-
-    //     self.due_date = due_date;
-    // }
-    // pub fn set_priority(&mut self, priority: Option<u8>) {
-    //     // if priority is set, it must be between 1 and 9
-    //     if priority.is_some() {
-    //         if priority.unwrap() < 1 || priority.unwrap() > 9 {
-    //             panic!("Failed to set priority: Priority must be between 1 and 9");
-    //         }
-    //     }
-    //     self.priority = priority;
-    // }
-    // pub fn set_tags(&mut self, tags: Option<Vec<String>>) {
-    //     // if tags are set, they must be a vector of strings that are not empty and do not contain spaces
-    //     if tags.is_some() {
-    //         for tag in tags.clone().unwrap() {
-    //             if tag.is_empty() || tag.contains(" ") {
-    //                 panic!(
-    //                     "Failed to set tags: Tags must not be empty and must not contain spaces"
-    //                 );
-    //             }
-    //         }
-    //     }
-    //     self.tags = tags;
-    // }
-    // pub fn remove_tag(&mut self, tag: String) {
-    //     if self.tags.is_some() {
-    //         let mut tags = self.tags.clone().unwrap();
-    //         if tags.contains(&tag) {
-    //             tags.remove(tags.iter().position(|t| t == &tag).unwrap());
-    //             self.tags = Some(tags);
-    //         } else {
-    //             panic!("Failed to remove tag: Tag does not exist");
-    //         }
-    //     } else {
-    //         panic!("Failed to remove tag: Tag does not exist");
-    //     }
-    // }
-    // pub fn append_tag(&mut self, tag: String) {
-    //     if self.tags.is_some() {
-    //         let mut tags = self.tags.clone().unwrap();
-    //         if !tags.contains(&tag) {
-    //             tags.push(tag);
-    //             self.tags = Some(tags);
-    //         } else {
-    //             panic!("Failed to add tag: Tag already exists");
-    //         }
-    //     } else {
-    //         let mut tags = self.tags.clone().unwrap_or(Vec::new());
-    //         tags.push(tag);
-    //         self.tags = Some(tags);
-    //     }
-    // }
     pub fn find_in_file(id: u32) -> Option<Task> {
         // opens the .citrine file and grabs all lines, then filters them by the id via Task::parse() if the id matches we return the task
         let file = std::fs::read_to_string(".citrine");
