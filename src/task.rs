@@ -9,22 +9,22 @@ pub struct Task {
 }
 #[derive(Debug, Clone, PartialEq)]
 pub enum Status {
-    OPEN,
-    INPROGRESS,
-    DONE,
-    OVERDUE,
+    Open,
+    InProgress,
+    Done,
+    Overdue,
 }
 fn parse_from_string(input: &str) -> Option<Task> {
     // 1. [x] some task - due: 2020-02-20T12:00:00+09:00 priority: 1 tags: tag1,tag2
     let mut due_date: Option<String> = None;
     let mut priority: Option<u8> = None;
     let mut tags: Option<Vec<String>> = None;
-    let id: u32;
+    
     let status: Status;
-    let title: String;
+    
 
     // to optain the id, we need to parse all characters until the first dot, and parse into u32
-    id = input
+    let id: u32 = input
         .chars()
         .take_while(|c| c != &'.')
         .collect::<String>()
@@ -36,17 +36,17 @@ fn parse_from_string(input: &str) -> Option<Task> {
     let closedbracket = input.chars().position(|c| c == ']').unwrap();
     if closedbracket - openbracket == 2 {
         status = match input.chars().nth(openbracket + 1).unwrap() {
-            'x' => Status::DONE,
-            ' ' => Status::OPEN,
-            '>' => Status::INPROGRESS,
-            '!' => Status::OVERDUE,
+            'x' => Status::Done,
+            ' ' => Status::Open,
+            '>' => Status::InProgress,
+            '!' => Status::Overdue,
             _ => panic!("Failed to parse Task: Invalid status"),
         };
     } else {
         panic!("Failed to parse Task: Invalid status");
-    }
+    };
     // obtaining the title is a bit more tricky, we need to find the first space after the closing bracket, and then take all characters until we encounter a dash or the string ends
-    title = input
+    let title: String = input
         .chars()
         .skip(closedbracket + 1)
         .take_while(|c| c != &'-')
@@ -85,7 +85,7 @@ fn parse_from_string(input: &str) -> Option<Task> {
                 .skip(tags_prefix_index.unwrap() + 6)
                 .take_while(|c| c != &' ')
                 .collect::<String>()
-                .split(",")
+                .split(',')
                 .map(|s| s.to_string())
                 .collect::<Vec<String>>(),
         );
@@ -105,10 +105,10 @@ fn stringify(task: Task) -> String {
     output.push_str(&task.id.to_string());
     output.push_str(". [");
     output.push_str(match task.status {
-        Status::OPEN => " ",
-        Status::INPROGRESS => ">",
-        Status::DONE => "x",
-        Status::OVERDUE => "!",
+        Status::Open => " ",
+        Status::InProgress => ">",
+        Status::Done => "x",
+        Status::Overdue => "!",
     });
     output.push_str("] ");
     output.push_str(&task.title);
@@ -124,7 +124,7 @@ fn stringify(task: Task) -> String {
         output.push_str(" - tags: ");
         output.push_str(&task.tags.unwrap().join(","));
     }
-    return output;
+    output
 }
 impl Task {
     pub fn parse(input: &str) -> Option<Task> {
@@ -145,19 +145,19 @@ impl Task {
     // }
 
     // pub fn set_status(&mut self, status: Status) {
-    //     // do not allow setting the status to OVERDUE if there is no due date from the past
-    //     if status == Status::OVERDUE && self.due_date.is_none() {
-    //         panic!("Failed to set status: Cannot set status to OVERDUE if there is no due date");
+    //     // do not allow setting the status to Overdue if there is no due date from the past
+    //     if status == Status::Overdue && self.due_date.is_none() {
+    //         panic!("Failed to set status: Cannot set status to Overdue if there is no due date");
     //     }
-    //     // check if the due date is in the past, if it is not and the status is OVERDUE, return an error message
-    //     if status == Status::OVERDUE && self.due_date.is_some() {
+    //     // check if the due date is in the past, if it is not and the status is Overdue, return an error message
+    //     if status == Status::Overdue && self.due_date.is_some() {
     //         let parsed_date = chrono::DateTime::parse_from_rfc3339(&self.due_date.clone().unwrap());
     //         if parsed_date.is_err() {
     //             panic!("Failed to parse due date: {}", parsed_date.unwrap_err());
     //         }
     //         let parsed_date = parsed_date.unwrap();
     //         if parsed_date > chrono::Utc::now() {
-    //             panic!("Failed to set status: Cannot set status to OVERDUE if the due date is in the future");
+    //             panic!("Failed to set status: Cannot set status to Overdue if the due date is in the future");
     //         }
     //     }
     //     self.status = status;
@@ -237,13 +237,11 @@ impl Task {
         let lines = file.lines();
         for line in lines {
             let task = Task::parse(line);
-            if task.is_some() {
-                if task.as_ref().unwrap().id == id {
-                    return task.clone();
-                }
+            if task.is_some() && task.as_ref().unwrap().id == id {
+                return task.clone();
             }
         }
-        return None;
+        None
     }
     pub fn append_to_file(task: Task) {
         let mut file = std::fs::OpenOptions::new()
@@ -265,10 +263,8 @@ impl Task {
         let mut output = String::new();
         for line in lines {
             let task = Task::parse(line);
-            if task.is_some() {
-                if task.as_ref().unwrap().id != id {
-                    output.push_str(&format!("{}\n", line));
-                }
+            if task.is_some() && task.as_ref().unwrap().id != id {
+                output.push_str(&format!("{}\n", line));
             }
         }
         std::fs::write(".citrine", output).unwrap();
@@ -303,12 +299,10 @@ impl Task {
         let mut last_id = 0;
         for line in lines {
             let task = Task::parse(line);
-            if task.is_some() {
-                if task.as_ref().unwrap().id > last_id {
-                    last_id = task.as_ref().unwrap().id;
-                }
+            if task.is_some() && task.as_ref().unwrap().id > last_id {
+                last_id = task.as_ref().unwrap().id;
             }
         }
-        return last_id;
+        last_id
     }
 }

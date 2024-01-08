@@ -110,7 +110,7 @@ fn handle_add_command(add: Add) {
         due_date: add.due_date,
         priority: add.priority,
         tags: add.tags,
-        status: task::Status::OPEN,
+        status: task::Status::Open,
     };
     if task.title.is_empty() {
         println!("Title must not be empty");
@@ -178,10 +178,10 @@ fn handle_update_commmand(update: Update) {
     }
     if let Some(status) = update.status {
         match status.as_str() {
-            "open" => new_task.status = task::Status::OPEN,
-            "in-progress" => new_task.status = task::Status::INPROGRESS,
-            "done" => new_task.status = task::Status::DONE,
-            "overdue" => new_task.status = task::Status::OVERDUE,
+            "open" => new_task.status = task::Status::Open,
+            "in-progress" => new_task.status = task::Status::InProgress,
+            "done" => new_task.status = task::Status::Done,
+            "overdue" => new_task.status = task::Status::Overdue,
             _ => {
                 println!("Status must be one of open, in-progress, done, or overdue");
                 return;
@@ -193,7 +193,7 @@ fn handle_update_commmand(update: Update) {
     }
     if let Some(remove_tag) = update.remove_tag {
         let mut tags = new_task.tags.unwrap();
-        let remove_tag = remove_tag.split(",").collect::<Vec<&str>>();
+        let remove_tag = remove_tag.split(',').collect::<Vec<&str>>();
         for tag in remove_tag {
             if tags.contains(&tag.to_string()) {
                 tags.remove(tags.iter().position(|x| x == &tag.to_string()).unwrap());
@@ -203,7 +203,7 @@ fn handle_update_commmand(update: Update) {
     }
     if let Some(append_tag) = update.append_tag {
         let mut tags = new_task.tags.unwrap();
-        let append_tag = append_tag.split(",").collect::<Vec<&str>>();
+        let append_tag = append_tag.split(',').collect::<Vec<&str>>();
         for tag in append_tag {
             if !tags.contains(&tag.to_string()) {
                 tags.push(tag.to_string());
