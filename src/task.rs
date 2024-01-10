@@ -74,6 +74,10 @@ impl Task {
                 _ => (),
             }
         }
+        // validate the task
+        if !result.validate() {
+            return None;
+        }
         Some(result)
     }
     pub fn validate(&self) -> bool {
