@@ -1,3 +1,5 @@
+use std::error::Error;
+
 pub struct Task {
     pub id: u8,
     pub title: String,
@@ -45,7 +47,7 @@ impl std::fmt::Display for Task {
 }
 
 impl Task {
-    pub fn from_string(input: String) -> Option<Task> {
+    pub fn from_string(input: String) -> Result<Task, Box<dyn Error>>{
         let mut result = Task {
             id: 0,
             title: String::new(),
@@ -54,18 +56,17 @@ impl Task {
             priority: None,
             tags: Vec::new(),
         };
-
-        result.id = input.split('.').next()?.parse::<u8>().unwrap();
-        result.status = input.split('[').nth(1)?.chars().next()?;
-        result.title = input.split('"').nth(1)?.to_string();
+        result.id = input.split('.').next().unwrap().parse::<u8>().unwrap_or(0);
+        result.status = input.split('[').nth(1).unwrap().chars().next().unwrap_or('-');
+        result.title = input.split('"').nth(1).unwrap_or("").to_string();
 
         let mut attributes = input.split(';');
         attributes.next();
 
         for attribute in attributes {
             let mut attribute = attribute.split(':');
-            let key = attribute.next()?.trim();
-            let value = attribute.next()?.trim();
+            let key = attribute.next().unwrap().trim();
+            let value = attribute.next().unwrap_or("").trim();
 
             match key {
                 "due" => result.due_date = Some(value.to_string()),
@@ -74,25 +75,23 @@ impl Task {
                 _ => (),
             }
         }
-        // validate the task
-        if !result.validate() {
-            return None;
-        }
-        Some(result)
+        // validate the task result and error if it is invalid
+        result.validate()?;
+        Ok(result)
     }
-    pub fn validate(&self) -> bool {
+    pub fn validate(&self) -> Result<bool, Box<dyn Error>> {
         if self.id == 0 {
-            return false;
+            return Err("Invalid ID 0".into());
         }
         if self.title.is_empty() {
-            return false;
+            return Err("Invalid title".into());
         }
         if self.status != ' ' && self.status != 'x' && self.status != '>' && self.status != '!' {
-            return false;
+            return Err("Invalid status".into());
         }
         if let Some(priority) = self.priority {
             if priority < 1 || priority > 9 {
-                return false;
+                return Err("Invalid priority".into());
             }
         }
         if let Some(due_date) = &self.due_date {
@@ -100,15 +99,15 @@ impl Task {
             if chrono::DateTime::parse_from_rfc3339(due_date).is_err()
                 && chrono::NaiveDate::parse_from_str(due_date, "%Y-%m-%d").is_err()
             {
-                return false;
+                return Err("Invalid date".into());
             }
             if chrono::DateTime::parse_from_rfc3339(due_date).is_ok() {
                 let date = chrono::DateTime::parse_from_rfc3339(due_date).unwrap();
                 if date < chrono::Utc::now() {
-                    return false;
+                    return Err("Invalid date".into());
                 }
             }
         }
-        true
+        Ok(true)
     }
 }

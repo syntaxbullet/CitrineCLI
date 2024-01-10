@@ -12,9 +12,8 @@ pub fn append_task(task: Task) -> Result<(), Box<dyn Error>> {
         .create(true)
         .open(".citrine")?;
     // validate the task
-    if !task.validate() {
-        println!("Invalid task");
-        return Ok(());
+    if task.validate().is_err() {
+        return Err("Invalid task".into());
     }
     writeln!(file, "{}", task)?;
     Ok(())
@@ -46,7 +45,7 @@ pub fn read_tasks() -> Result<Vec<Task>, Box<dyn Error>> {
     let mut tasks = Vec::new();
     for line in contents.lines() {
         // skip unparseable lines
-        if let Some(task) = Task::from_string(line.to_string()) {
+        if let Ok(task) = Task::from_string(line.to_string()) {
             tasks.push(task);
         }
     }
@@ -54,6 +53,10 @@ pub fn read_tasks() -> Result<Vec<Task>, Box<dyn Error>> {
 }
 pub fn write_tasks(tasks: Vec<Task>) -> Result<(), Box<dyn Error>> {
     let mut file = File::create(".citrine")?;
+    // sort the tasks by id
+    let mut tasks = tasks;
+    tasks.sort_by(|a, b| a.id.cmp(&b.id));
+    
     for task in tasks {
         writeln!(file, "{}", task)?;
     }

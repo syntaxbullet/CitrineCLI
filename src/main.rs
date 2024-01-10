@@ -1,5 +1,5 @@
-mod task;
 mod storage;
+mod task;
 use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser)]
@@ -90,16 +90,21 @@ fn main() {
                 tags: add.tags.unwrap_or(Vec::new()),
             };
             // validate the task
-            if !task.validate() {
-                println!("Invalid task");
-                return;
+            if task.validate().is_err() {
+                // if the task is invalid, print the error and exit
+                let error = task.validate().unwrap_err();
+                println!("{}", error);
+                std::process::exit(1);
             }
             // append the task to the task list
             storage::append_task(task).unwrap();
-
-
         }
         Some(Commands::Update(update)) => {
+            // check if the id of the task exists
+            if storage::read_task(update.id).is_err() {
+                println!("Task with id {} does not exist", update.id);
+                std::process::exit(1);
+            }
             // get the task to update
             let mut task = storage::read_task(update.id).unwrap();
             // update the task
@@ -116,19 +121,33 @@ fn main() {
                 task.title = title;
             }
             if let Some(append_tag) = update.append_tag {
-                task.tags.push(append_tag);
+                // append the tag list to the task, deduplicating the tags
+                task.tags.append(
+                    &mut append_tag
+                        .split(',')
+                        .map(|s| s.trim().to_string())
+                        .collect::<Vec<String>>(),
+                );
             }
             if let Some(remove_tag) = update.remove_tag {
-                task.tags.retain(|tag| tag != &remove_tag);
-            }
-            // validate the task
-            if !task.validate() {
-                println!("Invalid task");
-                return;
+                // remove the tag list from the task, deduplicating the tags
+                task.tags.retain(|tag| {
+                    !remove_tag
+                        .split(',')
+                        .map(|s| s.trim().to_string())
+                        .collect::<Vec<String>>()
+                        .contains(tag)
+                });
             }
             // update the task in the task list
+            // validate the task
+            if task.validate().is_err() {
+                // if the task is invalid, print the error and exit
+                let error = task.validate().unwrap_err();
+                println!("{}", error);
+                std::process::exit(1);
+            }
             storage::update_task(update.id, task).unwrap();
-
         }
         Some(Commands::Delete(delete)) => {
             // delete the task from the task list
