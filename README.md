@@ -80,7 +80,7 @@ citrine add [OPTIONS] <TITLE>
 
 ### Options:
 
-- `-d, --due <DUE_DATE>` - The due date in RFC 3339 format (`YYYY-MM-DDTHH:MM:SS+00:00`).
+- `-d, --due <DUE_DATE>` - The due date in RFC 3339 format (`YYYY-MM-DDTHH:MM:SS+00:00`) or naive date format (`YYYY-MM-DD`)
 - `-p, --priority <PRIORITY>` - Priority level (0-9).
 - `-t, --tags <TAGS>` - Associated tags, comma-separated.
 - `-h, --help` - Display help.

@@ -26,7 +26,7 @@ enum Commands {
 struct Add {
     /// The title of the task
     title: String,
-    /// The due date of the task in rfc3339 format (e.g. 2021-01-01T00:00:00+00:00)
+    /// The due date of the task in rfc3339 format (e.g. 2021-01-01T00:00:00+00:00) or naive-date format (e.g. 2021-01-01)
     #[arg(short = 'd', long = "due")]
     due_date: Option<String>,
     /// The priority of the task [0-9]
@@ -41,7 +41,7 @@ struct Add {
 struct Update {
     /// The id of the task to update
     id: u8,
-    /// The due date of the task in rfc3339 format (e.g. 2021-01-01T00:00:00+00:00)
+    /// The due date of the task in rfc3339 format (e.g. 2021-01-01T00:00:00+00:00) or naive-date format (e.g. 2021-01-01)
     #[arg(short = 'd', long = "due")]
     due_date: Option<String>,
     /// The priority of the task (0-9)
