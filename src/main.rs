@@ -117,6 +117,9 @@ fn main() {
             if let Some(status) = update.status {
                 task.status = status.chars().next().unwrap();
             }
+            if let Some(tags) = update.tags {
+                task.tags = tags;
+            }
             if let Some(title) = update.title {
                 task.title = title;
             }
