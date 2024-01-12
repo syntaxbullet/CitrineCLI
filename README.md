@@ -147,3 +147,6 @@ citrine list | grep -c '[x]'
 # Set relative deadlines using the GNU date command
 citrine add -d "$(date --rfc-3339=seconds --date='next Friday')" "Task Title"
 ```
+#### Why Citrine?
+Citrine is the most minimal yet most flexible task manager you can imagine. I built citrine because I really needed to create a minimal solution
+for myself to manage my tasks, in a way in which I wouldn't have to maintain another database, online account or similar. Instead I created citrine, a small tool that I could automate, saving me time while also allowing me to play around with custom shell scripts or additional apps to add even crazier features or customizations. For me Citrine is the beginning in a journey to stop procrastination and I hope some other people will use it too.
