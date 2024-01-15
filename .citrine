@@ -1,1 +1,2 @@
-1. [ ] "figure out cron integration via a custom script"; priority: 7; tags: feature,deadlines,cron; 
+1. [x] "figure out cron integration via a custom script"; priority: 7; tags: feature, deadlines, cron; 
+2. [ ] "implement suggestions from the discord server"; priority: 9; tags: suggestions, discord, v1.1; 
