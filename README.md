@@ -126,8 +126,6 @@ citrine list
 
 Use `citrine list` to see an overview of all tasks.
 
-*Replace placeholders with actual values when executing commands.*
-
 ## Advanced Usage
 For more advanced users, here are some examples of how Citrine's output can be used in conjunction with other CLI tools to create interesting behaviors:
 
